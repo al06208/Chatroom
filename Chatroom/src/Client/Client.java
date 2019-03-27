@@ -19,6 +19,7 @@ public class Client {
 	private static DataInputStream din;
 	private static DataOutputStream dout;
 	private JTextField inputField;
+	private JTextField userField;
 	private static JTextArea msgbox = new JTextArea();
 	
 	
@@ -69,7 +70,7 @@ public class Client {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
-		msgbox.setBounds(10, 11, 417, 360);
+		msgbox.setBounds(10, 30, 417, 340);
 		frame.getContentPane().add(msgbox);
 		
 		inputField = new JTextField();
@@ -77,12 +78,17 @@ public class Client {
 		frame.getContentPane().add(inputField);
 		inputField.setColumns(10);
 		
+		userField = new JTextField();
+		userField.setBounds(10, 5, 90, 20);
+		frame.getContentPane().add(userField);
+		userField.setColumns(10);
+		
 		JButton msgSend = new JButton("SEND");
 		msgSend.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				try {
 					String msgout = "";
-					msgout = inputField.getText().trim();
+					msgout = (userField.getText().trim() + ": " + inputField.getText().trim());
 					dout.writeUTF(msgout);
 				} catch (IOException e) {
 					e.printStackTrace();
