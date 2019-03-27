@@ -46,7 +46,7 @@ public class Client {
 			
 			while(!msgin.equals("exit")) {
 				msgin = din.readUTF();
-				msgbox.setText(msgbox.getText().trim() + "\n Server:" + msgin);
+				msgbox.setText(msgbox.getText().trim() + msgin);
 			}
 		}catch(Exception e) {
 			

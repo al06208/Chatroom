@@ -2,6 +2,7 @@ package Server;
 import java.awt.EventQueue;
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
 
 import javax.swing.JFrame;
 import javax.swing.JTextArea;
@@ -20,11 +21,12 @@ public class Server {
 	private static DataOutputStream dout;
 	private static JTextArea msgbox = new JTextArea();
 	private JTextField inputField;
-
+	
+	static ArrayList<ClientHandler> clients = new ArrayList<ClientHandler>();
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -38,8 +40,33 @@ public class Server {
 		
 		String alias = "";
 		String msgin = "";
+
 		
-		try {
+		//make the socket
+		ss = new ServerSocket(2001);
+		//continuously listen on it
+		while(true) {
+			Socket s = null;
+			
+			try {
+				s = ss.accept();
+				
+				DataInputStream dis = new DataInputStream(s.getInputStream());
+				DataOutputStream dout = new DataOutputStream(s.getOutputStream());
+				
+				ClientHandler t = new ClientHandler(s, dis, dout);
+				
+				t.start();
+				clients.add(t);
+			}
+			catch(Exception e) {
+				System.out.println("oh god");
+				s.close();
+				System.out.println(e.toString());
+			}
+		}
+		
+		/*try {
 			ss = new ServerSocket(2001);
 			s = ss.accept();
 			
@@ -52,7 +79,7 @@ public class Server {
 			}
 		}catch(Exception e) {
 			e.printStackTrace();
-		}
+		}*/
 	}
 
 	/**
@@ -79,7 +106,7 @@ public class Server {
 		frame.getContentPane().add(inputField);
 		inputField.setColumns(10);
 		
-		JButton msgSend = new JButton("SEND");
+		/*JButton msgSend = new JButton("SEND");
 		msgSend.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				try {
@@ -92,6 +119,38 @@ public class Server {
 			}
 		});
 		msgSend.setBounds(335, 229, 89, 23);
-		frame.getContentPane().add(msgSend);
+		frame.getContentPane().add(msgSend);*/
 	}
 }
+
+class ClientHandler extends Thread {
+	
+	final Socket s;
+	final DataInputStream in;
+	final DataOutputStream out;
+	
+	public ClientHandler(Socket s, DataInputStream in, DataOutputStream out) {
+		this.s = s;
+		this.in = in;
+		this.out = out;
+	}
+	
+	public void run() {
+	String received = "";
+	String sent;
+	while(true) {
+		try{
+			received = in.readUTF();
+			for(ClientHandler x:Server.clients) {
+				x.out.writeUTF("\n"+received);
+			}
+		}
+		catch(Exception e) {
+			System.out.println("Handler issue");
+		}
+		
+	}
+	}
+
+}
+
