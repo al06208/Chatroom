@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.net.Socket;
 
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JButton;
@@ -20,6 +21,7 @@ public class Client {
 	private static DataOutputStream dout;
 	private JTextField inputField;
 	private JTextField userField;
+	private JLabel userNameLabel;
 	private static JTextArea msgbox = new JTextArea();
 	
 	
@@ -65,7 +67,7 @@ public class Client {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		frame = new JFrame();
+		frame = new JFrame("ChatClient");
 		frame.setBounds(100, 100, 453, 452);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
@@ -79,9 +81,14 @@ public class Client {
 		inputField.setColumns(10);
 		
 		userField = new JTextField();
-		userField.setBounds(10, 5, 90, 20);
+		userField.setBounds(80, 5, 90, 20);
 		frame.getContentPane().add(userField);
 		userField.setColumns(10);
+		
+		userNameLabel = new JLabel("Username:");
+		userNameLabel.setBounds(10, 5, 90, 20);
+		frame.getContentPane().add(userNameLabel);
+		
 		
 		JButton msgSend = new JButton("SEND");
 		msgSend.addActionListener(new ActionListener() {
